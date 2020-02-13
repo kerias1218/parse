@@ -1,6 +1,6 @@
 ## Html parse 
 
-![스크린샷 2020-02-13 오후 3 30 04](https://user-images.githubusercontent.com/17056359/74407842-30cbee00-4e76-11ea-9331-c2b3c201760e.png)
+![스크린샷 2020-02-13 오후 3 40 58](https://user-images.githubusercontent.com/17056359/74408320-74732780-4e77-11ea-89f8-4717ef3ebb5f.png)
 
 전략객체를 사용하여 finance.naver.com 외에 다른 html 파싱해야 될경우
 객체만 교체하면 됩니다.
