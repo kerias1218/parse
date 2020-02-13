@@ -1,6 +1,6 @@
 ## Html parse 
 
-https://david-dm.org/{{naya}}/{{php-parse}}.svg
+https://david-dm.org/{{username}}/{{project_name}}.svg
 
 https://finance.naver.com/item/sise_day.nhn?code=003070&page=1
 
