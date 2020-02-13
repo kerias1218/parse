@@ -1,0 +1,15 @@
+{
+    "name": "naya/parse",
+    "description": "finance naver com parsing",
+    "authors": [
+        {
+            "name": "naya",
+            "email": "kerias@naver.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=7.0.0",
+        "curl/curl": "^2.0"
+    }
+}
