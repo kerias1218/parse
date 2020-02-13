@@ -7,7 +7,7 @@
             "email": "kerias@naver.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "php": ">=7.0.1",
         "curl/curl": "^2.0"
