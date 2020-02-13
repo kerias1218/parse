@@ -62,10 +62,10 @@ foreach ($lists as $item) {
 ```
 
 
-##### class 파일 찾지 못할때
+## class 파일 찾지 못할때
 
 ```composer dumpautoload -o```
 
-##### packagist
+## packagist
 
 ```https://packagist.org/packages/naya/php-parse```
