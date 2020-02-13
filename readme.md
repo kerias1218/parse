@@ -1,4 +1,4 @@
-# Html parse 
+## Html parse 
 
 https://finance.naver.com/item/sise_day.nhn?code=003070&page=1
 
@@ -10,12 +10,12 @@ https://finance.naver.com/item/sise_day.nhn?code=003070&page=1
 
 
 
-#Installation
+## Installation
 
 
 
 
-####With Composer
+##### With Composer
 
 ```composer require naya/php-parse```
 
@@ -62,8 +62,10 @@ foreach ($lists as $item) {
 ```
 
 
-class 파일 찾지 못할때
+##### class 파일 찾지 못할때
 
 ```composer dumpautoload -o```
 
+##### packagist
 
+```https://packagist.org/packages/naya/php-parse```
