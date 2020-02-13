@@ -1,19 +1,15 @@
 ## Html parse 
 
-https://finance.naver.com/item/sise_day.nhn?code=003070&page=1
-
 전략객체를 사용하여 finance.naver.com 외에 다른 html 파싱해야 될경우
 객체만 교체하면 됩니다.
 
 또한 출력시 기본 파일 출력 / DB insert 시 SaveDB 객체 만들어서
 교체 해주면 됩니다.
 
-
+## Target Site
+``` https://finance.naver.com/item/sise_day.nhn?code=003070&page=1```
 
 ## Installation
-
-
-
 
 ##### With Composer
 
