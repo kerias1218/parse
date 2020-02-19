@@ -67,3 +67,11 @@ foreach ($lists as $item) {
 ## packagist
 
 ```https://packagist.org/packages/naya/php-parse```
+
+## git 이용법
+```
+git add .
+git commit -m "message"
+git tag v1.0.6
+git push origin v1.0.6
+```

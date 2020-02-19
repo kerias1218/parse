@@ -167,7 +167,6 @@ class MarketDataKrxCoKr implements IParse
         exit;
     }
 
-
     private function dismantle($item, $delimiter) {
         $tmpArr = explode($delimiter, $item);
         $this->stock['code'] = $tmpArr[0];
