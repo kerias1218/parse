@@ -1,4 +1,9 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Naya\\": "vendor/naya/parse/"
+        }
+    },
     "name": "naya/php-parse",
     "description": "finance naver com parsing",
     "authors": [
@@ -10,6 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.0.1",
-        "curl/curl": "^2.0"
+        "curl/curl": "^2.0",
+	"nesbot/carbon": "^2.29"
     }
 }
