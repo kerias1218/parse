@@ -37,12 +37,26 @@ class MarketDataKrxCoKr implements IParse
     }
 
     private function downCsv() {
+
         /**
          * CSV download click
         */
 
-        $this->generateOtp();
-        $this->getCsv();
+        for($i=0; $i<10; $i++) {
+
+            $this->generateOtp();
+            $this->getCsv();
+
+            if ($this->checkCsv()) {
+                $this->result['status'] = "true";
+                break;
+            }
+            else {
+                $this->result['status'] = "false";
+            }
+
+            sleep(10);
+        }
     }
 
     private function onepageData() {
@@ -105,8 +119,6 @@ class MarketDataKrxCoKr implements IParse
         $curl = new Curl($url, $refer);
         $this->result['data'] = $curl->postPage($post, $headers, false);
 
-        if($this->checkCsv()) $this->result['status'] = "true";
-        else $this->result['status'] = "false";
     }
 
     public function saveFile() {
