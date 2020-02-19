@@ -15,64 +15,105 @@ namespace Naya;
 
 use Carbon\Carbon;
 
-
 class MarketDataKrxCoKr implements IParse
 {
     use CommonTrait;
 
-    const PATH_CSV = __DIR__."/../../../data2/";
-    const EXT = ".csv";
+    private $config;
     private $result = [];
 
-    public function __construct() {
-
+    public function __construct(MarketDataKrxCoKrConfig $config) {
+        $this->config = $config;
     }
+
+    /**
+     * algorithm
+    */
 
     public function parsing() {
+        // TODO: Implement parsing() method.
+
+        if( ! is_dir($this->config->dir) ) throw new \Exception("저장 경로가 없습니다. :\n".$this->config->dir);
+
         $this->downCsv();
     }
+
 
     public function getResult() {
         return $this->result;
     }
 
+    /**
+     * CSV download button click
+     */
+
     private function downCsv() {
 
-        /**
-         * CSV download click
-        */
-
-        for($i=0; $i<10; $i++) {
+        for($i=0; $i<5; $i++) {
 
             $this->generateOtp();
             $this->getCsv();
 
-            if ($this->checkCsv()) {
-                $this->result['status'] = "true";
-                break;
-            }
-            else {
-                $this->result['status'] = "false";
-            }
+            $this->result['status'] = ($this->checkCsv())?"true":"false";
+
+            if ($this->result['status'] == "true") break;
+            else $this->result['status'] = "false";
 
             sleep(10);
         }
     }
 
-    private function onepageData() {
+    public function generateOtp() {
+        $curl = new Curl($this->config->otpUrl, $this->config->otpRefer);
+        $this->result['opt'] = trim($curl->getPage());
+    }
 
-        /**
-         *
-         * 페이지 네이션 9페이지 까지 가져오기
-         *
-         * 1. http://marketdata.krx.co.kr/contents/COM/Nowtime.jspx?_=1581903657758 (GET)
-         *
-         * 2. get OPT (GET)
-         * http://marketdata.krx.co.kr/contents/COM/GenerateOTP.jspx?bld=MKD/13/1302/13020101/mkd13020101&name=form&_=1581903657759
-         *
-         * 3. http://marketdata.krx.co.kr/contents/MKD/99/MKD99000001.jspx (POST)
-         *
-         */
+    private function getCsv() {
+        $headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Upgrade-Insecure-Requests' => '1',
+        ];
+
+        $post = [
+            'code' => $this->result['opt'],
+        ];
+
+        $curl = new Curl($this->config->downCsvUrl, $this->config->downCsvRefer);
+        $this->result['data'] = $curl->postPage($post, $headers, false);
+
+    }
+
+    private function checkCsv() {
+        $total =  count( explode("\n", $this->result['data']));
+        if($total > 1000) return true;
+        else return false;
+    }
+
+    public function saveFile() {
+        if( $this->result['status'] == "false" ) throw new \Exception("csv 데이터 가져오지 못했습니다.");
+
+        $dir = $this->config->dir.$this->config->saveFileName.$this->config->ext;
+        $fo = fopen($dir,"w");
+        fwrite($fo, $this->result['data']);
+        fclose($fo);
+    }
+
+
+
+    /**
+     *
+     * 페이지 네이션 9페이지 까지 가져오기
+     *
+     * 1. http://marketdata.krx.co.kr/contents/COM/Nowtime.jspx?_=1581903657758 (GET)
+     *
+     * 2. get OPT (GET)
+     * http://marketdata.krx.co.kr/contents/COM/GenerateOTP.jspx?bld=MKD/13/1302/13020101/mkd13020101&name=form&_=1581903657759
+     *
+     * 3. http://marketdata.krx.co.kr/contents/MKD/99/MKD99000001.jspx (POST)
+     *
+     */
+
+    private function onepageData() {
 
         $this->nowTime();
         $this->getOpt();
@@ -96,50 +137,9 @@ class MarketDataKrxCoKr implements IParse
 
     }
 
-    private function generateOtp() {
-        $url = "http://marketdata.krx.co.kr/contents/COM/GenerateOTP.jspx?name=fileDown&filetype=csv&url=MKD/13/1302/13020101/mkd13020101&market_gubun=ALL&sect_tp_cd=ALL&schdate=20200219&pagePath=%2Fcontents%2FMKD%2F13%2F1302%2F13020101%2FMKD13020101.jsp";
-        $refer = "http://marketdata.krx.co.kr/contents/MKD/13/1302/13020101/MKD13020101.jsp";
-        $curl = new Curl($url, $refer);
-
-        $this->result['opt'] = trim($curl->getPage());
-    }
-
-    private function getCsv() {
-        $url = "http://file.krx.co.kr/download.jspx";
-        $refer = "http://marketdata.krx.co.kr/contents/MKD/13/1302/13020101/MKD13020101.jsp";
-        $post = [
-            'code' => $this->result['opt']
-        ];
-
-        $headers = [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'Upgrade-Insecure-Requests' => '1',
-        ];
-
-        $curl = new Curl($url, $refer);
-        $this->result['data'] = $curl->postPage($post, $headers, false);
-
-    }
-
-    public function saveFile() {
-        if( $this->result['status'] == "false" ) throw new \Exception("csv 데이터 가져오지 못했습니다.");
-
-        $dir = self::PATH_CSV.$this->getDateYmd().self::EXT;
-        $fo = fopen($dir,"w");
-        fwrite($fo, $this->result['data']);
-        fclose($fo);
-    }
-
-    private function checkCsv() {
-        $total =  count( explode("\n", $this->result['data']));
-        if($total > 1000) return true;
-        else return false;
-    }
 
 
-    /**
-     * page 별 data 가져오기
-    */
+
     private function getStockData() {
 
         $tmpArr = [];
