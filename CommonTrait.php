@@ -8,8 +8,15 @@
 
 namespace Naya;
 
+use Carbon\Carbon;
+
 trait CommonTrait
 {
+
+    public function getDateYmd() {
+        $ca =  Carbon::now();
+        return $ca->format("Y-m-d");
+    }
 
     public function test() {
         echo "I am CommonTrait  test() method";

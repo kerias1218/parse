@@ -89,6 +89,29 @@ class Curl
         return $page;
     }
 
+    public function postPage(array $post, array $headers=[], $header=0) {
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $this->host);
+
+        if($header) curl_setopt($curl, CURLOPT_HEADER, true);
+        if($headers) curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        if($this->refer) curl_setopt($curl, CURLOPT_REFERER, $this->refer);
+
+        curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+        curl_setopt($curl, CURLOPT_USERAGENT, $this->agent);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $page = curl_exec($curl);
+        curl_close($curl);
+
+        return $page;
+
+    }
+
+
     function cUrlGetData($post_fields = null, $headers = null) {
 
 
