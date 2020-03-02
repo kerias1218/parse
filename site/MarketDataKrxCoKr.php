@@ -21,6 +21,8 @@ class MarketDataKrxCoKr implements IParse
 
     private $config;
     private $result = [];
+    private $csvCount;
+    private $ext;
 
     public function __construct(MarketDataKrxCoKrConfig $config) {
         $this->config = $config;
@@ -32,9 +34,7 @@ class MarketDataKrxCoKr implements IParse
 
     public function parsing() {
         // TODO: Implement parsing() method.
-
         if( ! is_dir($this->config->dir) ) throw new \Exception("저장 경로가 없습니다. :\n".$this->config->dir);
-
         $this->downCsv();
     }
 
@@ -50,18 +50,26 @@ class MarketDataKrxCoKr implements IParse
     private function downCsv() {
 
         for($i=0; $i<5; $i++) {
-
+            $this->consoleStart();
             $this->generateOtp();
             $this->getCsv();
 
             $this->result['status'] = ($this->checkCsv())?"true":"false";
 
-            if ($this->result['status'] == "true") break;
+            if ($this->result['status'] == "true") {
+                break;
+            }
             else $this->result['status'] = "false";
 
             sleep(10);
         }
+
     }
+
+    private function consoleStart() {
+        echo $this->config->searchDate." 추출중...".PHP_EOL;
+    }
+
 
     public function generateOtp() {
         $curl = new Curl($this->config->otpUrl, $this->config->otpRefer);
@@ -85,17 +93,29 @@ class MarketDataKrxCoKr implements IParse
 
     private function checkCsv() {
         $total =  count( explode("\n", $this->result['data']));
-        if($total > 1000) return true;
+        $this->csvCount = $total;
+
+        $this->makeExt();
+
+        if($total >= 1) return true;
         else return false;
+    }
+
+    private function makeExt() {
+        if( $this->csvCount == 1 ) $this->ext = '.nodata';
+        else $this->ext = $this->config->ext;
     }
 
     public function saveFile() {
         if( $this->result['status'] == "false" ) throw new \Exception("csv 데이터 가져오지 못했습니다.");
 
-        $dir = $this->config->dir.$this->config->saveFileName.$this->config->ext;
+        $dir = $this->config->dir.$this->config->saveFileName.$this->ext;
         $fo = fopen($dir,"w");
         fwrite($fo, $this->result['data']);
         fclose($fo);
+
+        echo $this->config->searchDate." 추출 완료 >> ".$this->config->saveFileName.$this->ext.PHP_EOL;
+
     }
 
 

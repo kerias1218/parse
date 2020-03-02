@@ -13,6 +13,7 @@ use Carbon\Carbon;
 class MarketDataKrxCoKrConfig
 {
     private $data = [];
+    private $searchData;
 
     public function __construct($searchDate) {
         $ca =  Carbon::now();
@@ -27,6 +28,8 @@ class MarketDataKrxCoKrConfig
         //$this->saveFileName = $ca->format("Y-m-d");
         $this->saveFileName = $searchDate;
         $this->ext = '.csv';
+
+        $this->searchDate = $searchDate;
     }
 
     public function __set($key, $value) {

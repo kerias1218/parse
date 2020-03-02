@@ -76,3 +76,43 @@ git commit -m "message"
 git tag v1.0.6
 git push origin v1.0.6
 ```
+
+## vi stock_parsing.php
+```
+#!/usr/bin/php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use Carbon\Carbon;
+use Naya\FinanceNaver;
+use Naya\Parse;
+use Naya\SaveFile;
+use Naya\Output;
+use Naya\MarketDataKrxCoKr;
+use Naya\MarketDataKrxCoKrConfig;
+
+
+
+if(count($argv) <2) {
+    echo "usage: php stock_parsing.php [date]".PHP_EOL;
+    echo "".PHP_EOL;
+    echo "date: 20200302 format".PHP_EOL;
+    echo "ex) php stock_parsing.php 2020228".PHP_EOL;
+    exit;
+}
+
+if( !preg_match("![0-9]{8}!is", $argv[1]) ) throw new \Exception("20200228 형식으로 입력해주세요.");
+
+
+$ca =  Carbon::now();
+$searchDate = trim($argv[1]);   // "20200228"; Ymd format
+
+$param = new MarketDataKrxCoKrConfig($searchDate);
+
+$krx = new MarketDataKrxCoKr($param);
+$par = new Parse($krx);
+$par->crawling();
+$krx->saveFile();
+
+```
