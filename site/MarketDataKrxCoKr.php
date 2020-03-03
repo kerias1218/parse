@@ -49,17 +49,17 @@ class MarketDataKrxCoKr implements IParse
 
     private function downCsv() {
 
-        for($i=0; $i<5; $i++) {
+        for($i=1; $i<=3; $i++) {
             $this->consoleStart();
             $this->generateOtp();
             $this->getCsv();
 
-            $this->result['status'] = ($this->checkCsv())?"true":"false";
+            $this->result['status'] = ($this->checkCsv())?true:false;
 
-            if ($this->result['status'] == "true") {
+            if ($this->result['status']) {
                 break;
             }
-            else $this->result['status'] = "false";
+            else $this->result['status'] = false;
 
             sleep(10);
         }
@@ -107,7 +107,7 @@ class MarketDataKrxCoKr implements IParse
     }
 
     public function saveFile() {
-        if( $this->result['status'] == "false" ) throw new \Exception("csv 데이터 가져오지 못했습니다.");
+        if( !$this->result['status'] ) throw new \Exception("csv 데이터 가져오지 못했습니다.");
 
         $dir = $this->config->dir.$this->config->saveFileName.$this->ext;
         $fo = fopen($dir,"w");

@@ -104,9 +104,16 @@ if(count($argv) <2) {
 
 if( !preg_match("![0-9]{8}!is", $argv[1]) ) throw new \Exception("20200228 형식으로 입력해주세요.");
 
+$searchDate = trim($argv[1]);   // "20200228"; Ymd format
 
 $ca =  Carbon::now();
-$searchDate = trim($argv[1]);   // "20200228"; Ymd format
+$dt = \Carbon\Carbon::createFromFormat('Ymd', $searchDate);
+
+if( $dt->dayOfWeek == \Carbon\Carbon::SATURDAY || $dt->dayOfWeek == \Carbon\Carbon::SUNDAY ) {
+    echo $searchDate.' 날짜는 토요일 또는 일요일 입니다. 계속 하시겠습니까? (y/n)'.PHP_EOL;
+    $input = fgetc(STDIN);
+    if($input == 'n') exit;
+}
 
 $param = new MarketDataKrxCoKrConfig($searchDate);
 
@@ -114,5 +121,7 @@ $krx = new MarketDataKrxCoKr($param);
 $par = new Parse($krx);
 $par->crawling();
 $krx->saveFile();
+
+
 
 ```
