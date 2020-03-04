@@ -14,8 +14,9 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=7.0.1",
+        "php": ">=7.2",
         "curl/curl": "^2.0",
-	"nesbot/carbon": "^2.29"
+	"nesbot/carbon": "^2.29",
+	"doctrine/dbal": "^2.10"
     }
 }

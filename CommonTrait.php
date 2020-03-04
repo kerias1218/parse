@@ -31,4 +31,11 @@ trait CommonTrait
         },array_change_key_case($arr));
 
     }
+
+    public function xmlToArray($xmlData) {
+        $xml = simplexml_load_string($xmlData);
+        $json = json_encode($xml);
+        return json_decode($json, TRUE);
+
+    }
 }

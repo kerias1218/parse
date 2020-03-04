@@ -20,8 +20,8 @@ class Curl
     {
         $this->host = htmlspecialchars_decode($host);
         $this->refer = htmlspecialchars_decode($refer);
-        //$this->agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0";
-        $this->agent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E)";
+        $this->agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:72.0) Gecko/20100101 Firefox/72.0";
+        //$this->agent = "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E)";
     }
 
     public function setReferer($refer) {
@@ -75,14 +75,15 @@ class Curl
         return $response;
     }
 
-    public function getPage() {
+    public function getPage($param='') {
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $this->host);
+        curl_setopt($curl, CURLOPT_URL, $this->host.'?'.$param);
         if($this->refer) curl_setopt($curl, CURLOPT_REFERER, $this->refer);
         curl_setopt($curl, CURLOPT_TIMEOUT, 3);
         curl_setopt($curl, CURLOPT_USERAGENT, $this->agent);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         $page = curl_exec($curl);
         curl_close($curl);
 
