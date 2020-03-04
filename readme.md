@@ -92,8 +92,6 @@ use Naya\Output;
 use Naya\MarketDataKrxCoKr;
 use Naya\MarketDataKrxCoKrConfig;
 
-
-
 if(count($argv) <2) {
     echo "usage: php stock_parsing.php [date]".PHP_EOL;
     echo "".PHP_EOL;
@@ -122,6 +120,53 @@ $par = new Parse($krx);
 $par->crawling();
 $krx->saveFile();
 
+```
 
+##vi stock_summary.php
+```
+#!/usr/bin/php
+<?php
 
+require __DIR__.'/vendor/autoload.php';
+
+use Naya\Parse;
+use Naya\MarketDataKrxCoKrSummary;
+use Naya\MarketDataKrxCoKrSummaryConfig;
+use Naya\SaveDb;
+use Doctrine\DBAL\DriverManager;
+
+$params = array(
+    'dbname' => '',
+    'user' => '',
+    'password' => '',
+    'host' => 'localhost',
+    'driver' => 'pdo_mysql',
+);
+
+$fp = file("./data/isin.txt");  // 002680,한탑,KR7002680007
+for($i=0; $i<count($fp); $i++) {
+    $val = trim($fp[$i]);
+    $arr = explode(",", $val);
+
+    $code = trim($arr[0]);
+    $title = trim($arr[1]);
+    $isin = trim($arr[2]);
+
+    $summary = new MarketDataKrxCoKrSummary(new MarketDataKrxCoKrSummaryConfig($code, $isin));
+    $par = new Parse($summary);
+    $par->crawling();
+
+    $result = $summary->getResult();
+
+    if($result['status']) {
+        $db = new SaveDb($summary, DriverManager::getConnection($params));
+        $db->save();
+    }
+    else {
+        $i--;
+    }
+
+    echo "$i => $code $title".PHP_EOL;
+    sleep(2);
+}
 ```

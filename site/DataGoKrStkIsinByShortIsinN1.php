@@ -16,15 +16,16 @@ namespace Naya;
 class DataGoKrStkIsinByShortIsinN1
 {
     CONST URL = 'http://api.seibro.or.kr/openapi/service/StockSvc/getStkIsinByShortIsinN1';
-    CONST KEY = 'wMsqd7ZuygHoZCf5QwIKqtZLnSdV%2BJD61jxLWs%2Bq3FBSNzkGdgPJ4xcx8ltizTtYI2NjfFJRVvF5nUSRDcaEBQ%3D%3D';
     CONST NUM_OF_ROWS = 1;
     CONST PAGE_NO = 1;
 
+    private $key;
     private $shortIsin;
     private $params;
 
-    public function __construct($code) {
+    public function __construct($code, $key) {
         $this->shortIsin = $code;
+        $this->key = $key;
         $this->makeParams();
     }
 
@@ -34,7 +35,7 @@ class DataGoKrStkIsinByShortIsinN1
 
     private function makeParams() {
         $param = [];
-        $param['serviceKey'] = self::KEY;
+        $param['serviceKey'] = $this->key;
         $param['pageNo'] = self::PAGE_NO;
         $param['numOfRows'] = self::NUM_OF_ROWS;
         $param['shortIsin'] = $this->shortIsin;
