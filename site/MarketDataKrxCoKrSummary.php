@@ -105,6 +105,9 @@ class MarketDataKrxCoKrSummary implements IParse
         $curl = new Curl($this->config->url2, $this->config->refer2);
         $json = $curl->postPage($post, $headers, false);
 
+        $this->result['code'] = $this->config->code;
+        $this->result['isin'] = $this->config->isin;
+
         $this->result['status'] = 1;
         $this->result['block1Json'] = $json;
         $this->result['data'][] = json_decode($json, TRUE);

@@ -18,6 +18,11 @@ trait CommonTrait
         return $ca->format("Y-m-d");
     }
 
+    public function now($format='Y-m-d') {
+        $ca = Carbon::now();
+        $now = $ca->format($format);
+    }
+
     public function test() {
         echo "I am CommonTrait  test() method";
     }

@@ -12,6 +12,8 @@ use Carbon\Carbon;
 
 class SaveDb
 {
+    use CommonTrait;
+
     private $obj;
     private $conn;
 
@@ -23,9 +25,21 @@ class SaveDb
     public function save() {
         $result = $this->obj->getResult();
 
-        echo "\t db SAVE".PHP_EOL;
+        $qerData = [];
+        $qerData = $result['data'][0]['DS1'][0];
+        $qerData['market_id'] = $result['data'][1]['block1'][0]['mkt_id'];
+        $qerData['info_date'] = $this->now("Y-m-d H:is");
 
-        //$this->testQuery();
+        unset($qerData['kis_cd']);
+        unset($qerData['isu_cd']);
+        unset($qerData['r_isu_cd']);
+        unset($qerData['par_pr']);
+
+        $qerData = array_map(function($item) {
+            return str_replace(",","",$item);
+        }, $qerData);
+
+        $this->conn->update("__stocks", $qerData, ['code'=>$result['code']]);
     }
 
 

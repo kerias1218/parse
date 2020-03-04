@@ -8,10 +8,10 @@
 
 namespace Naya;
 
-class SaveFile implements IOutput
+class SaveFile
 {
     private $stObj;
-    const DIR = "./data/";
+    const DIR = "./base_data/";
 
     public function __construct($obj) {
         $this->stObj = $obj;
@@ -22,20 +22,15 @@ class SaveFile implements IOutput
 
         $data = $this->stObj->getResult();
 
-        foreach($data as $k=>$arr) {
-            $fineName = self::DIR."{$k}.data";
+        $data['ds1Json'];
+        $data['block1Json'];
 
-            $fo = fopen($fineName, "a");
-            
-            foreach($arr as $k2=>$arr2) {
-                array_map(function($item) use($fo) {
-                    $line = implode("^",$item).PHP_EOL;
-                    fwrite($fo, $line);
-                }, $arr2);
+        $separator = "^|^";
 
-            }
-            fclose($fo);
-        }
+        $line = $data['code'].$separator.$data['ds1Json'].$separator.$data['block1Json'].PHP_EOL;
+        $fo = fopen(self::DIR."stock_summary_info.txt", "a");
+        fwrite($fo, $line);
+        fclose($fo);
 
     }
 }
