@@ -113,5 +113,4 @@ class MarketDataKrxCoKrSummary implements IParse
     public function getResult() {
         return $this->result;
     }
-
 }
