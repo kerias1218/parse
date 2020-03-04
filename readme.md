@@ -122,6 +122,65 @@ $krx->saveFile();
 
 ```
 
+##vi stock_isin3.php
+```
+#!/usr/bin/php
+<?php
+
+/*
+ *  https://www.data.go.kr/subMain.jsp?param=T1BFTkFQSUAxNTAwMTE0NQ==#/L3B1YnIvcG90L215cC9Jcm9zTXlQYWdlL29wZW5EZXZHdWlkZVBhZ2UkQF4wMTJtMSRAXnB1YmxpY0RhdGFQaz0xNTAwMTE0NSRAXnB1YmxpY0RhdGFEZXRhaWxQaz11ZGRpOmQxYWZiZGJjLTQyMDEtNDFjMi05YmQ1LWI5YTk5MWM5ZDZlYV8yMDE3MTIxNTE5MTUkQF5vcHJ0aW5TZXFObz0xOTE2MSRAXm1haW5GbGFnPXRydWU=
+ *  stock 번호로 주식종목코드(풀코드) 조회
+ *
+ */
+
+require __DIR__.'/vendor/autoload.php';
+
+use Naya\Parse;
+use Naya\DataGoKrStkIsinByShortIsinN1;
+use Naya\DataGoKr;
+
+$apiKey = '';
+
+$fp = file("./stock_code.txt");
+
+foreach($fp as $k => $item) {
+    $arr = explode(",", $item);
+    $code = trim($arr[0]);
+    $title = trim($arr[1]);
+
+    $dg = new DataGoKr(new DataGoKrStkIsinByShortIsinN1($code, $apiKey));
+    $par = new Parse($dg);
+    $par->crawling();
+    $result = $dg->getResult();
+
+    if($result['status']) {
+        $line = "$code,".@$result['data']['korSecnNm'].",".$result['data']['isin'].PHP_EOL;
+        fileSave("isin.txt", $line);
+
+        echo $k.' '.$line;
+        sleep(1);
+    }
+    else {
+        $line = "$code,".@$result['data']['korSecnNm'].",".PHP_EOL;
+        fileSave("no_isin.txt", $line);
+
+        echo '<pre>';
+        print_r($result);
+        exit;
+    }
+
+}
+
+
+function fileSave($fn, $line) {
+    $fo = fopen("./data/".$fn, "a");
+    fwrite($fo, $line);
+    fclose($fo);
+}
+
+```
+
+
 ##vi stock_summary.php
 ```
 #!/usr/bin/php
